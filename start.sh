@@ -7,5 +7,5 @@ while ! xdpyinfo -display ${DISPLAY} > /dev/null 2>&1; do
     sleep 0.1
 done
 
-# Starting mbgl-renderer server
-node index.js
+# Start the server
+node server.js
