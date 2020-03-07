@@ -1,12 +1,15 @@
-let sharp = require('sharp');
-let mbgl = require('@mapbox/mapbox-gl-native');
 let request = require('request');
 let express = require('express');
+let sharp = require('sharp');
+let mbgl = require('@mapbox/mapbox-gl-native');
+const puppeteer = require('puppeteer');
 
 let app = express();
 let port = 8080;
 
-app.get('/render', (req, response) => {
+app.use(express.static('public'));
+
+app.get('/map', (req, response) => {
     let style = req.query.style;
     let ratio = parseFloat(req.query.ratio);
     let width = parseInt(req.query.width);
@@ -67,4 +70,27 @@ app.get('/render', (req, response) => {
     });
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.get('/report', async (req, response) => {
+    let url = req.query.url;
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(url, {waitUntil: 'networkidle0'});
+    let pdf = await page.pdf({format: 'A4',
+    displayHeaderFooter: true,
+    headerTemplate: `
+    <div style="font-size: 10px; padding-top: 5px; text-align: center; width: 100%;">
+      <span>Camptocamp Demo Report</span>
+    </div>
+    `,
+    footerTemplate: `
+    <div style="font-size: 10px; padding-top: 5px; text-align: center; width: 100%;">
+      <span><span class="pageNumber"></span>
+    </div>
+    `});
+    await browser.close();
+    response.set('Content-Type', 'application/pdf');
+    response.send(pdf);
+});
+
+
+app.listen(port, () => console.log(`App listening on port ${port}!`));

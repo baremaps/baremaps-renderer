@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Pacifico&display=swap');
+
+@page { 
+    size: A4;
+    margin: 15mm 25mm 25mm 25mm;
+}
+
+body {
+    margin: 0;
+}
+
+table {
+    width: 100%;
+    text-align: center;
+    border: solid .1em blue;
+}
+
+img {
+    float: left;
+}
+
+h1, h2, h3 {
+    font-family: 'Pacifico', cursive;
+}
+
+h2 {
+    page-break-before: always
+}
